@@ -1,9 +1,41 @@
-from flask import Flask, render_template
+from flask import Flask, request, json, render_template
+import requests
 app = Flask(__name__)
 
 @app.route('/')
-def hello_world():
-    return 'Hello world!'
+def index():
+    return render_template('index.html')
+
+@app.route('/form')
+def handle_form():
+        return render_template('form.html')
+
+@app.route('/result', methods=['POST'])
+def result():
+    name = request.form.get('name')
+    surname = request.form.get('surname')
+    age = request.form.get('age')
+    return render_template('result.html', name=name, surname=surname, age=age)
+
+@app.route('/api') 
+def yesorno():
+    response = requests.get('https://yesno.wtf/api') 
+    data = response.json()
+    fact = data['answer']
+
+    if fact == 'yes':
+        return '<h1 style="background-color:green; color:white; text-align:center; padding:50px;">YES</h1>'
+    else:
+        return '<h1 style="background-color:red; color:white; text-align:center; padding:50px;">NO</h1>'
+
+
+
+@app.route('/method', methods=['GET', 'POST'])
+def method():
+    if request.method == 'POST':
+        return 'Użyto metody POST'
+    else:
+        return 'Użyto metody GET'
 
 @app.route('/batman')
 def batman():
